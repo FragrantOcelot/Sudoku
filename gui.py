@@ -24,6 +24,19 @@ sudoku = [
     [6, 0, 0, 3, 0, 0, 0, 1, 0],
     [0, 0, 0, 6, 1, 0, 4, 3, 0]
 ]
+solved_sudo = [
+    [0, 0, 4, 0, 9, 0, 8, 0, 5],
+    [0, 5, 0, 0, 0, 7, 2, 0, 0],
+    [0, 3, 0, 0, 2, 0, 0, 0, 0],
+    [0, 0, 0, 4, 0, 0, 0, 2, 9],
+    [0, 0, 0, 0, 7, 0, 0, 0, 8],
+    [5, 0, 0, 0, 8, 1, 3, 7, 4],
+    [0, 2, 1, 0, 0, 0, 5, 0, 0],
+    [6, 0, 0, 3, 0, 0, 0, 1, 0],
+    [0, 0, 0, 6, 1, 0, 4, 3, 0]
+]
+
+solver.solver(solved_sudo)
 
 
 def button(x, y, width, height, txt):
@@ -69,9 +82,8 @@ def draw(faults, time):
 
 
 running = True
-key = None
-mistakes = 2
-
+mistakes = 0
+key = 0
 start_time = time.time()
 while running:
     screen.fill((222, 226, 230))
@@ -103,6 +115,7 @@ while running:
     if button(291, 520, 92, 50, "Solve"):
         solver.solver(sudoku)
 
+
     draw(mistakes, play_time)
 
     for i, line in enumerate(sudoku):
@@ -111,8 +124,14 @@ while running:
             num = None
             if digit != 0:
                 num = str(digit)
-            if button(112 + j * 50, 62 + i * 50, 50, 50, num) and str(key).isalnum():
-                if solver.legit(sudoku, key, (i, j)):
-                    pass
+            if button(112 + j * 50, 62 + i * 50, 50, 50, num) and str(key).isalnum() and digit == 0:
+                if key != solved_sudo[i][j] and key != 0:
+                    mistakes += 1
+                else:
+                    sudoku[i][j] = key
+                key = 0
+    if mistakes == 3:
+        print(" Game over ! ")
+        break
 
     pygame.display.update()
